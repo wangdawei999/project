@@ -1,0 +1,3 @@
+This is the test of the paper of "A Blockchain-based Vehicle-trust Management Framework Under a Crowdsourcing Environment".
+This is a communication model what it is made up of RSU and Vehicle.
+The function of this test is to measure the influence of TEE(Trusted Execution Environment).
