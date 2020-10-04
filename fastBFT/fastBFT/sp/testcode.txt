@@ -1,0 +1,73 @@
+//test encrypto/decrypto
+void crtende()
+{
+	    unsigned char secret[key_size];
+	    generate_random_secret(secret);
+	    
+	    uint8_t en_ctr[16]={'0'};
+	    uint8_t ensecret[128];
+	    
+	    sgx_aes_ctr_encrypt(&p_key[0],secret,16,en_ctr,128,ensecret);
+	    
+	    uint8_t desecret[key_size];
+	    memset(desecret,'\0',sizeof(desecret));
+	    uint8_t de_ctr[16]={'0'};
+	    
+	    sgx_aes_ctr_decrypt(&p_key[0],ensecret,16,
+	    de_ctr,128,desecret);
+
+	    printf("decrypt\n");
+	    printbitsn(desecret,key_size);
+	    printf("%d\t%d\n",SGX_EC_VALID,SGX_EC_INVALID_SIGNATURE);
+}
+void ende(){
+        unsigned char secret[key_size];
+        uint8_t en_dst[16]={'0'};
+        uint8_t p_iv[12]={'0'};
+        uint32_t iv_len=12;
+        uint8_t *p_aad=NULL;
+        uint32_t aad_len=0;
+        sgx_aes_gcm_128bit_tag_t p_out_mac;
+	    generate_random_secret(secret);
+	    sgx_rijndael128GCM_encrypt(&p_key[1],secret,key_size,en_dst,p_iv,iv_len,p_aad,aad_len, &p_out_mac);
+	    uint8_t de_dst[16]={'0'};
+        sgx_rijndael128GCM_decrypt(&p_key[1],en_dst,key_size,de_dst,p_iv,iv_len,p_aad,aad_len, &p_out_mac);
+        printf("decrypt\n");
+	    printbitsn(de_dst,key_size);
+}
+//test decrypto sicv
+        printf("encrypt2222\n");
+	    printbitsn((unsigned char*)&ensecrets[i]+(a-1)*128,56);
+	    printbitsn((unsigned char*)&myensecret[i],56);
+
+//test verify shares
+        int i=verify_shares(secret,xor_secret,shares,SaNum);
+	    printf("verify %s\n",i?"same":"not same")
+
+//print public key and private key
+	    printf("p_private\n");
+        printbitsn((unsigned char *)&p_private,sizeof(p_private));
+	    printf("\np_public gx\n");
+	    printbitsn(p_public.gx,sizeof(p_public.gx));
+	    printf("\np_public gy\n");
+	    printbitsn(p_public.gy,sizeof(p_public.gy));
+	    printf("\n");
+	    
+//another copy way of ensecret,mysecret
+	    printf("addr myensecret%p\t%p\t%p\n",&myensecret[0],&myensecret,myensecret);
+	    printbitsn((unsigned char*)myensecret,sizeof(myensecret));
+	    for(int k=0;k<SaNum;k++)
+	    {
+	        uint8_t ensecret[128]={'0'};
+            mystrncpy((unsigned char*)ensecret,(unsigned char*)&myensecret[k],sizeof(ensecret));
+            printf("encrypt\n");
+            //printbitsn((unsigned char*)&myensecret[k],56);
+            printbitsn((unsigned char*)ensecret,56);
+        }
+	    mystrncpy((unsigned char*)&ensecrets[a-1],(unsigned char*)myensecret,sizeof(myensecret));
+
+//testt signature verify
+	    uint8_t p_result;
+	    sgx_ecdsa_verify((uint8_t *)&hcv,sizeof(hcv),&p_public, &p_signature,&p_result, ecc_handle);
+	    printf("%d\t%d\n",SGX_EC_VALID,SGX_EC_INVALID_SIGNATURE);
+        printf("p_result%d\t%d\n",p_result,SGX_EC_VALID); 
